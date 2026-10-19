@@ -8,3 +8,5 @@ python-dotenv
 passlib
 argon2-cffi
 python-jose
+pytest
+httpx

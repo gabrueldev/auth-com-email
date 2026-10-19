@@ -1,12 +1,8 @@
 
-from fastapi import APIRouter
-
 from fastapi_mail import FastMail, MessageSchema
 from .email_config import conf
 
-router = APIRouter()
-
-@router.post("/email/confirmacao")
+# Função interna, não é uma rota: só o cadastro pode disparar esse email
 async def enviar_codigo(email: str, codigo: str):
 
     html = f"""
@@ -33,7 +29,7 @@ async def enviar_codigo(email: str, codigo: str):
             <div style="
                 font-size:36px;
                 font-weight:bold;
-                letter-spacing:8px;
+                letter-spacing:6px;
                 background:#f2f2f2;
                 padding:15px;
                 border-radius:8px;
