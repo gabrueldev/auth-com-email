@@ -1,4 +1,3 @@
-
 USER = {"email": "joao@example.com", "name": "João", "password": "senhaforte123"}
 
 def cadastrar(client, emails):
@@ -49,9 +48,8 @@ def test_limite_de_tentativas(client, emails):
     for _ in range(5):
         client.post("/user/verify/", json={"email": USER["email"], "codigo": errado})
 
-    # Mesmo o código certo é recusado depois de 5 erros
-    response = client.post("/user/verify/", json={"email": USER["email"], "codigo": codigo})
-    assert response.status_code == 429
+    codigo_certo_depois_de_5_erros = client.post("/user/verify/", json={"email": USER["email"], "codigo": codigo})
+    assert codigo_certo_depois_de_5_erros.status_code == 429
 
 def test_codigo_expirado(client, emails, monkeypatch):
     codigo = cadastrar(client, emails)

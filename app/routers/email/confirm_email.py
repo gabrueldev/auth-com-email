@@ -1,8 +1,6 @@
-
 from fastapi_mail import FastMail, MessageSchema
 from .email_config import conf
 
-# Função interna, não é uma rota: só o cadastro pode disparar esse email
 async def enviar_codigo(email: str, codigo: str):
 
     html = f"""

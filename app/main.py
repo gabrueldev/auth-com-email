@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 
 from .routers.auth import cadaster_user, login_user, verify

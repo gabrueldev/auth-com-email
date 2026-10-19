@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.orm import declarative_base
 
@@ -12,7 +11,6 @@ class User(Base):
     name = Column(String)
     password = Column(String)
 
-# Cadastro esperando a confirmação do código enviado por email
 class PendingUser(Base):
     __tablename__ = 'pending_users'
 

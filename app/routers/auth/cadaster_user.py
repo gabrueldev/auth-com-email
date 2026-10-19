@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,12 +10,22 @@ from ..email.confirm_email import enviar_codigo
 
 import time
 
-CODIGO_EXPIRA_EM = 300  # 5 minutos
+CODIGO_EXPIRA_EM_SEGUNDOS = 5 * 60
 
 router = APIRouter(
     prefix="/user/cadaster",
     tags=["cadaster_user"]
 )
+
+def salvar_ou_substituir_cadastro_pendente(db, user, codigo):
+    pending = db.query(PendingUser).filter_by(email=user.email).first() or PendingUser(email=user.email)
+    pending.name = user.name
+    pending.password = hash_password(user.password)
+    pending.codigo = hash_codigo(codigo)
+    pending.expira = time.time() + CODIGO_EXPIRA_EM_SEGUNDOS
+    pending.tentativas = 0
+    db.add(pending)
+    db.commit()
 
 @router.post("/", status_code=202)
 async def cadaster_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -25,17 +34,7 @@ async def cadaster_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail="Email já cadastrado")
 
     codigo = gerar_codigo()
-
-    # Se já existe um cadastro pendente, ele é substituído pelo novo
-    pending = db.query(PendingUser).filter_by(email=user.email).first() or PendingUser(email=user.email)
-    pending.name = user.name
-    pending.password = hash_password(user.password)
-    pending.codigo = hash_codigo(codigo)
-    pending.expira = time.time() + CODIGO_EXPIRA_EM
-    pending.tentativas = 0
-    db.add(pending)
-    db.commit()
-
+    salvar_ou_substituir_cadastro_pendente(db, user, codigo)
     await enviar_codigo(user.email, codigo)
 
     return {"message": "Código enviado para o email"}
@@ -49,7 +48,7 @@ async def reenviar_codigo(data: UserResend, db: Session = Depends(get_db)):
 
     codigo = gerar_codigo()
     pending.codigo = hash_codigo(codigo)
-    pending.expira = time.time() + CODIGO_EXPIRA_EM
+    pending.expira = time.time() + CODIGO_EXPIRA_EM_SEGUNDOS
     pending.tentativas = 0
     db.commit()
 
