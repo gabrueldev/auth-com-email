@@ -1,5 +1,7 @@
 # Auth com Email
 
+![CI](https://github.com/gabrueldev/auth-com-email/actions/workflows/ci.yml/badge.svg)
+
 ### Cadastro com confirmação por email, do jeito que os sites grandes fazem
 
 API em **FastAPI** de cadastro e login onde a conta só é criada depois que o usuário confirma o email. No cadastro, a API manda um código de 6 dígitos para o email informado; com o código certo, o usuário é criado e já pode logar e receber seu **JWT**.
@@ -35,6 +37,7 @@ Até confirmar o código, o cadastro fica numa tabela separada (`pending_users`)
 + Passlib + Argon2
 + Docker Compose
 + Pytest | Testes Automatizados
++ CI com GitHub Actions
 
 ## Rodando o projeto
 
