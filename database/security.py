@@ -1,4 +1,3 @@
-
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -31,7 +30,6 @@ def verify_password(plain_password: str, hashed_password: str):
 def gerar_codigo():
     return f"{secrets.randbelow(1_000_000):06d}"
 
-# O código fica salvo como hash, assim quem ler o banco não consegue usá-lo
 def hash_codigo(codigo: str):
     return hashlib.sha256(codigo.encode()).hexdigest()
 
